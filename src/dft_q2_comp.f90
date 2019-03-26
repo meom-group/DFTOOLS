@@ -53,7 +53,7 @@ PROGRAM dft_q2_comp
 
   ! 1) Read command line
   narg = iargc()   ! How many arguments on the command line ?
-  IF ( narg /= 2 ) THEN
+  IF ( narg == 0  ) THEN
      PRINT *,''
      PRINT *,' USAGE : dft_q2_comp -d2 DEWPOINT-file -msl MSL-file [-d2v D2-var]'
      PRINT *,'         [-mslv MSL-var] [-o Q2-file ] [-lon DIM-lon] [-lat DIM-lat]'
@@ -106,10 +106,6 @@ PROGRAM dft_q2_comp
      END SELECT
   ENDDO
 
-
-  CALL getarg(1, cfilenameD)
-  CALL getarg(2, cfilenameP)
-
   IF ( cfileout == 'none' ) THEN !  not set in the options infer from d2 file
   ! 2) build output file name
   ! 2.1 look if the filenameD contain 2D
@@ -128,6 +124,7 @@ PROGRAM dft_q2_comp
   
   ! 3) Open input files
   istatus= NF90_OPEN(cfilenameD,NF90_NOWRITE,ncidD) ! open read-only
+  print *,NF90_STRERROR(istatus)
   istatus= NF90_OPEN(cfilenameP,NF90_NOWRITE,ncidP) ! open read-only
   IF ( istatus /= NF90_NOERR) THEN
      ! One or two of the files does not exist probably ...
@@ -139,9 +136,10 @@ PROGRAM dft_q2_comp
   istatus=NF90_INQ_DIMID(ncidD,c_dimlon ,idx ) ; istatus=NF90_INQUIRE_DIMENSION(ncidD,idx,len=npi)
   istatus=NF90_INQ_DIMID(ncidD,c_dimlat ,idy ) ; istatus=NF90_INQUIRE_DIMENSION(ncidD,idy,len=npj)
   istatus=NF90_INQ_DIMID(ncidD,c_dimtim, idtD) ; istatus=NF90_INQUIRE_DIMENSION(ncidD,idtD,len=nptD)
+  print *,NF90_STRERROR(istatus)
   istatus=NF90_INQ_DIMID(ncidP,c_dimtim, idtP) ; istatus=NF90_INQUIRE_DIMENSION(ncidP,idtP,len=nptP)
 
-  
+  print *, nptD, nptP 
   IF ( nptD /= nptP ) THEN
      PRINT *, 'not the same number of time in d2 and msl  Sorry :( '
      STOP
