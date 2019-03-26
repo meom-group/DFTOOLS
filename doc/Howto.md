@@ -4,8 +4,8 @@
 
 # How to prepare ECMWF reanalysis fields for being DRAKKAR-NEMO complient ?
 ## ERA interim
-###  Rename variables to DRAKKAR standards:
-    * use [dft_renamevar.sh](../scripts/dft_renamevar.sh) script.
+### 1. Rename variables to DRAKKAR standards:
+  * use [dft_renamevar.sh](../scripts/dft_renamevar.sh) script.
 
    ```
 
@@ -22,11 +22,11 @@
 
    ```
 
-###  u10 v10 t2 msl
-    * These variables are now ready to use.
+### 2. Variables u10 v10 t2 msl
+  * These variables are now ready to use.
  
-### compute q2 from dewpoint temperature and mean sea level pressure  
-    * Need to compute q2 (humidity) from d2 and msl: use [dft_q2_comp](../src/dft_q2_comp.f90)
+### 3. Compute q2 from dewpoint temperature and mean sea level pressure  
+  * Need to compute q2 (humidity) from d2 and msl: use [dft_q2_comp](../src/dft_q2_comp.f90)
 
     ```
     USAGE : dft_q2_comp -d2 DEWPOINT-file -msl MSL-file [-d2v D2-var]
@@ -61,14 +61,14 @@
 
     ```
 
-### precip snow :
-    * Need to decumulate   
-    * Need to change units ( from `m` to `kg/m2/s`)
-    * Need to produce daily files instead of 3-hourly (why ? )
+### 4. Variables precip and snow :
+  * Need to decumulate   
+  * Need to change units ( from `m` to `kg/m2/s`)
+  * Need to produce daily files instead of 3-hourly (why ? )
 
-### radiative fluxes
-    * Need to decumulate   
-    * Need to change units ( from `J/m2` to `W/m2`)
-    * Need to produce daily files instead of 3-hourly (why ? )
+### 5. Radiative fluxes
+  * Need to decumulate   
+  * Need to change units ( from `J/m2` to `W/m2`)
+  * Need to produce daily files instead of 3-hourly (why ? )
   
 ## ERA5
