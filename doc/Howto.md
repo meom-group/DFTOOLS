@@ -5,11 +5,15 @@
 # How to prepare ECMWF reanalysis fields for being DRAKKAR-NEMO complient ?
 ## ERA interim
 ###  u10 v10 t2 msl
-  Just rename the variables in the files:
+ Just rename the variables in the files:
+ 
+ ```
       U10M --> u10
       V10M --> v10
       T2M  --> t2
       MSL  --> msl
+ ```
+ 
 ### d2 msl
   Need to compute q2 (humidity) from d2 and msl
 ### precip snow :
@@ -18,8 +22,12 @@
 ### radiative fluxes
   Need to decumulate   
   Need to change units ( from `J/m2` to `W/m2`)
-  Need to rename variables:
+  Need to rename variables:  
+  
+  ```
       SSRD --> radsw
       STRD --> radlw
+  ```
+  
 ## msl
 ## ERA5
