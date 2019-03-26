@@ -11,7 +11,7 @@ BINDIR = ../bin
 
 VPATH = $(BINDIR)
 
-EXEC = change_unit_precip_jmm calc_q2_msl upside_down decumul calc_q2 change_unit_precip \
+EXEC = change_unit_precip_jmm dft_q2_comp upside_down decumul calc_q2 change_unit_precip \
        calc_q2_6H upside_down_var change_unit_precip_raw  mk_lsm_var mk_lsm_from_rawfile \
        decumul_yearly mk_daily_mean mk_monthly_mean add_feb_29 global_timeserie
 #-----------------------------------------------------
@@ -33,8 +33,8 @@ mk_monthly_mean: mk_monthly_mean.f90
 calc_q2: calc_q2.f90
 	$(F90) calc_q2.f90 -o $(BINDIR)/calc_q2 $(FFLAGS)
 
-calc_q2_msl: calc_q2_msl.f90
-	$(F90) calc_q2_msl.f90 -o $(BINDIR)/calc_q2_msl $(FFLAGS)
+dft_q2_comp: dft_q2_comp.f90
+	$(F90) dft_q2_comp.f90 -o $(BINDIR)/dft_q2_comp $(FFLAGS)
 
 change_unit_precip: change_unit_precip.f90
 	$(F90) change_unit_precip.f90 -o $(BINDIR)/change_unit_precip $(FFLAGS)
