@@ -3,7 +3,7 @@
 # This script is part of the DFTOOLS.
 # It renames ECMWF variable names to those used historically in DRAKKAR
 
-typlist="d2 msl radlw radsw snow precip t2 tcc u10 v10 "
+typlist="d2  radlw radsw snow precip t2 tcc u10 v10 "
 
 if [ $# = 0 ] ; then
    echo "USAGE : $(basename $0) go "
@@ -24,7 +24,6 @@ for typ in $typlist ; do
    for f in ${typ}*nc ; do
       case $typ in
       ( d2  )  var=D2M ;;
-      ( msl )  var=MSL ;;
       ( precip )  var=TP ;;
       ( radlw )  var=STRD ;;
       ( radsw )  var=SSRD ;;

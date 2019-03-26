@@ -41,7 +41,7 @@ PROGRAM dft_q2_comp
 
   CHARACTER(LEN=80) :: cv_q2           !: to hold variable name
   CHARACTER(LEN=80) :: cv_d2 ='d2'     !: to hold variable name
-  CHARACTER(LEN=80) :: cv_msl='msl'    !: to hold variable name
+  CHARACTER(LEN=80) :: cv_msl='MSL'    !: to hold variable name
   CHARACTER(LEN=80) :: cv_lon='lon'
   CHARACTER(LEN=80) :: cv_lat='lat'
   CHARACTER(LEN=80) :: cv_time='time'
