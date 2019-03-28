@@ -61,14 +61,51 @@
 
     ```
 
-### 4. Variables precip and snow :
-  * Need to decumulate   
-  * Need to change units ( from `m` to `kg/m2/s`)
-  * Need to produce daily files instead of 3-hourly (why ? )
+### 4. Variables precip and snow , radiative heat fluxes (radlw and radsw)
+  * Need to decumulate   and build daily file using [dft_decumul_daily](../src/dft_decumul_daily.f90)  
+    See also this [dft_decumul_daily.sh](../scripts/dft_decumul_daily.sh) script for automatic treatment.
 
-### 5. Radiative fluxes
-  * Need to decumulate   
-  * Need to change units ( from `J/m2` to `W/m2`)
-  * Need to produce daily files instead of 3-hourly (why ? )
+    ``` 
+  
+  USAGE : dft_decumul_daily  -f CUMUL-file -v CUMUL-var -u OUT-units 
+          [-lon DIM-lon] [-lat DIM-lat] [-tim DIM-time]
+  
+    PURPOSE:
+        Process the 3-hourly cumulated files (e.g precip, snow, ssrd, strd)
+        in order to build an un-cumulated daily file (units are changed).
+  
+    METHOD:
+        For each day, in the 3-hourly ERAinterim files, value at 12h is the
+        cumulated values from 0h to 12h, and the value at 24h are the cumulated
+        values from 12h to 24h. Hence, the daily cumul is the sum of value at
+        12h + value at 24h. The daily mean rate is obtained by dividing this
+        sum by the number of seconds in a day (86400).
+  
+    WARNING :
+        Strong assumptions about the cumulating process are done for this code.
+        (see method above). Be sure that your data follow the same pattern.
+  
+    ARGUMENTS:
+        -f CUMUL-file : name of the yearly file with 3h cumulated values.
+        -v CUMUL-var : name of the variable to process in CUMUL-file.
+        -u OUT-units : units of the output field (rate).
+  
+    OPTIONS:
+        -lon DIM-lon ; give name of longitude dimension, 
+                   default :[lon]
+        -lon DIM-lat ; give name of latitude dimension, 
+                   default :[lat]
+        -tim DIM-time ; give name of time dimension, 
+                   default :[time]
+  
+    OUTPUT:
+        netcdf file : <CUMUL_file>_daily 
+        variable    : <CUMUL_var> 
+        units       : Original units/ s
+  
+    ```
+
+  * Need to change units only for `precip` and `snow`( from `m/s` to `kg/m2/s`)   
+    This is just a division by 1000. Script [dft_ch_unit_precip.sh](../scripts/dft_ch_unit_precip.sh) can be used for this easy task (use ncap2 and ncatted)
   
 ## ERA5
