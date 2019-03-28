@@ -102,7 +102,6 @@
         netcdf file : <CUMUL_file>_daily 
         variable    : <CUMUL_var> 
         units       : Original units/ s
-  
     ```
 
   * Need to change units only for `precip` and `snow`( from `m/s` to `kg/m2/s`)   
