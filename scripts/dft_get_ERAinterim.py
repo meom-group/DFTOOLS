@@ -44,11 +44,11 @@ def usage(name):
    print '  OPTIONS:'
    print '     -h : Display this help message'
    print '     -g <GRIB-directory> : define the GRIB directory where the grib files will'
-   print '              be written. Default: ./'
+   print '              be written. Default: ', gribdir
    print ' '
    sys.exit()
 
-def parse(argv,name):
+def set_default():
    global gribdir
    global fyear
    global lyear
@@ -56,6 +56,9 @@ def parse(argv,name):
    gribdir = './'
    fyear = -1
    lyear = -1
+
+
+def parse(argv,name):
 
    try:
       opts, args = getopt.getopt(argv,"hf:l:g:",["help","first_year=","last_year=","grib_directory="])
@@ -108,6 +111,7 @@ def get_era_interim(fyear,lyear,gribdir):
                 })
 
 if __name__ == "__main__":
+   set_default()
    if len(sys.argv) == 1:
       usage(sys.argv[0])
    parse(sys.argv[1:],os.path.basename(sys.argv[0]) )
