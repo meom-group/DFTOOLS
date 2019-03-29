@@ -3,29 +3,29 @@
   * need to create an ECMWF account. In the process a key is granted to the subscriber
   * follows instalation procedure given in the website
   * need to install ecmwf python module.
-## 1. Use the [dft_get_ERAinterim.py](../scripts/dft_get_ERAinterim.py) python script
+## 2. Use the [dft_get_ERAinterim.py](../scripts/dft_get_ERAinterim.py) python script
 
-  '''
+```
+
+    USAGE: ./dft_get_ERAinterim.py -h  -f <first_year> -l <last_year> [ -h ] [-g <GRIB-directory> ]
  
-USAGE: ./dft_get_ERAinterim.py -h  -f <first_year> -l <last_year> [ -h ] [-g <GRIB-directory> ]
+      PURPOSE:
+        This python script ends up with a set of grib files, downloaded from the 
+        ECMWF MARS server. The downloaded files, corresponding to suitable variables
+        for NEMO forcing, will be processed later by DFTOOLS, in order to obtain the
+        netcdf set of files used by NEMO.
  
-  PURPOSE:
-     This python script ends up with a set of grib files, downloaded from the 
-     ECMWF MARS server. The downloaded files, corresponding to suitable variables
-     for NEMO forcing, will be processed later by DFTOOLS, in order to obtain the
-     netcdf set of files used by NEMO.
- 
-  ARGUMENTS:
-     -f < first_year> : indicate the first_year to download.
-     -l < last_year> : indicate the last _year to download.
- 
-  OPTIONS:
-     -h : Display this help message
-     -g <GRIB-directory> : define the GRIB directory where the grib files will
+     ARGUMENTS:
+        -f < first_year> : indicate the first_year to download.
+        -l < last_year> : indicate the last _year to download.
+      
+     OPTIONS:
+        -h : Display this help message
+        -g <GRIB-directory> : define the GRIB directory where the grib files will
               be written. Default:  ./
- 
 
-  '''
+```
+
 
 # How to prepare ECMWF reanalysis fields for being DRAKKAR-NEMO complient ?
 ## 1. Rename variables to DRAKKAR standards:
