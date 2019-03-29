@@ -1,5 +1,3 @@
-<p align="center"
-#  FAQ when working with ERAinterim atmospheric forcing and NEMO /p>
 # How to retrieve ERAinterim reanalysis from ECMWF server ?
 
 # How to prepare ECMWF reanalysis fields for being DRAKKAR-NEMO complient ?
