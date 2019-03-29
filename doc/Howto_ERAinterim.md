@@ -1,10 +1,7 @@
-# How to retrieve reanalysis from ECMWF server ?
-## ERA interim
-## ERA5
+# How to retrieve ERAinterim reanalysis from ECMWF server ?
 
 # How to prepare ECMWF reanalysis fields for being DRAKKAR-NEMO complient ?
-## ERA interim
-### 1. Rename variables to DRAKKAR standards:
+## 1. Rename variables to DRAKKAR standards:
   * use [dft_renamevar.sh](../scripts/dft_renamevar.sh) script.
 
    ```
@@ -22,10 +19,10 @@
 
    ```
 
-### 2. Variables u10 v10 t2 msl
+## 2. Variables u10 v10 t2 msl
   * These variables are now ready to use.
  
-### 3. Compute q2 from dewpoint temperature and mean sea level pressure  
+## 3. Compute q2 from dewpoint temperature and mean sea level pressure  
   * Need to compute q2 (humidity) from d2 and msl: use [dft_q2_comp](../src/dft_q2_comp.f90)
 
     ```
@@ -61,7 +58,7 @@
 
     ```
 
-### 4. Variables precip and snow , radiative heat fluxes (radlw and radsw)
+## 4. Variables precip and snow , radiative heat fluxes (radlw and radsw)
   * Need to decumulate   and build daily file using [dft_decumul_daily](../src/dft_decumul_daily.f90)  
     See also this [dft_decumul_daily.sh](../scripts/dft_decumul_daily.sh) script for automatic treatment.
 
@@ -107,7 +104,6 @@
   * Need to change units only for `precip` and `snow`( from `m/s` to `kg/m2/s`)   
     This is just a division by 1000. Script [dft_ch_unit_precip.sh](../scripts/dft_ch_unit_precip.sh) can be used for this easy task (use ncap2 and ncatted)
   
-## ERA5
 
 # How to drown the forcing files using [sosie](https://github.com/brodeau/sosie) ?
    Drowning is the process by which land values are replaced by extrapolation of ocean values, in order to be able to perform NEMO interpolation on the fly (IOF) (bilinear or bicubic) without poluting ocean values by land values. 
