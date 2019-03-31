@@ -13,7 +13,7 @@ VPATH = $(BINDIR)
 
 EXEC = change_unit_precip_jmm dft_q2_comp upside_down decumul calc_q2 change_unit_precip \
        calc_q2_6H upside_down_var change_unit_precip_raw  mk_lsm_var mk_lsm_from_rawfile \
-       decumul_yearly mk_daily_mean mk_monthly_mean add_feb_29 global_timeserie \
+       decumul_yearly mk_daily_mean mk_monthly_mean add_feb_29 dft_timeseries \
        dft_decumul_daily.f90
 #-----------------------------------------------------
 
@@ -71,8 +71,8 @@ mk_lsm_from_rawfile: mk_lsm_from_rawfile.f90
 add_feb_29: add_feb_29.f90
 	$(F90) add_feb_29.f90 -o $(BINDIR)/add_feb_29 $(FFLAGS)
 
-global_timeserie: global_timeserie.f90
-	$(F90) global_timeserie.f90 -o $(BINDIR)/global_timeserie $(FFLAGS)
+dft_timeseries: dft_timeseries.f90
+	$(F90) dft_timeseries.f90 -o $(BINDIR)/dft_timeseries $(FFLAGS)
 
 test_adjustment: test_adjustment.f90
 	$(F90) test_adjustment.f90 -o $(BINDIR)/test_adjustment

@@ -1,6 +1,6 @@
-PROGRAM global_timeserie
+PROGRAM dft_timeseries
   !!======================================================================
-  !!                     ***  PROGRAM  global_timeserie  ***
+  !!                     ***  PROGRAM  dft_timeseries  ***
   !!=====================================================================
   !!  ** Purpose : Compute spatially weighted average of forcing fields
   !!               available on geographical grid (e.g. ERA40, ERAinterim)
@@ -56,8 +56,10 @@ USE netcdf
    CHARACTER(LEN=256)                            :: cldum                        ! dummy string argument
 
    CHARACTER(LEN=256)                            :: cf_msk="mask.nc" , cv_msk="lsm"
-   CHARACTER(LEN=256)                            :: cv_lon="lon"     , cv_lat="lat"
    CHARACTER(LEN=256)                            :: cv_altlon="lon0" , cv_altlat="lat0"
+   CHARACTER(LEN=256)                            :: c_dimlon='lon' , cv_lon='lon'
+   CHARACTER(LEN=256)                            :: c_dimlat='lat' , cv_lat='lat'
+   CHARACTER(LEN=256)                            :: c_dimtim='time', cv_tim='time'
    CHARACTER(LEN=256)                            :: cl_frstyr="0", cl_lastyr="0"
    CHARACTER(LEN=256)                            :: cl_zone='global'
    CHARACTER(LEN=256)                            :: cl_dtaset='unknown'
@@ -75,7 +77,9 @@ USE netcdf
      PRINT *,' usage :  global_timeserie list_of_files -var variable_name ...'
      PRINT *,'         [-fyear first_year] [-lyear last_year] [-area region_of_interest] ...'
      PRINT *,'         [-dataset dataset_name ] [-diroutput output_directory ] ... '
-     PRINT *,'         [-mask path_to_mask] [-ratio multiplicative_ratio ]'
+     PRINT *,'         [-mask path_to_mask] [-ratio multiplicative_ratio ] ...'
+     PRINT *,'         [ -dim_lon LON-dim ] [-dim_lat LAT-dim ] [-dim_tim TIME-dim] ...'
+     PRINT *,'         [ -var_lon LON-var ] [-var_lat LAT-var ] [-var_tim TIME-var]' 
      PRINT *,'      '
      PRINT *,'     PURPOSE :'
      PRINT *,'       This program aims at computing timeseries of spatially averaged'
@@ -95,17 +99,29 @@ USE netcdf
      PRINT *,'         REM : these three options are only used for building the prefix '
      PRINT *,'            of the output files.( see OUTPUT below)'
      PRINT *,'       -area region of interest : indicate latitude predefined regions of '
-     PRINT *,'              interest. Available regions are : Polar_South [-90S, -70S],'
-     PRINT *,'              Subpolar_South [-70S, -45S], Subtropical_South [-45S, -25S],'
-     PRINT *,'              Tropical_South [-25S, -10S], Equatorial_Band [ -10S, 10N ],'
-     PRINT *,'              Tropical_North [10N, 25N], Subtropical_North [25N, 45N],'
-     PRINT *,'              Subpolar_North [45N, 70N], Polar_North [70N, 90 N],'
+     PRINT *,'              interest. Available regions are : '
+     PRINT *,'              Polar_South [-90S, -70S]'
+     PRINT *,'              Subpolar_South [-70S, -45S]'
+     PRINT *,'              Subtropical_South [-45S, -25S],'
+     PRINT *,'              Tropical_South [-25S, -10S]'
+     PRINT *,'              Equatorial_Band [ -10S, 10N ]'
+     PRINT *,'              Tropical_North [10N, 25N]'
+     PRINT *,'              Subtropical_North [25N, 45N]'
+     PRINT *,'              Subpolar_North [45N, 70N]'
+     PRINT *,'              Polar_North [70N, 90 N]'
      PRINT *,'              global [all the file ]'
      PRINT *,'              Default is [',TRIM(cl_zone),']'
      PRINT *,'       -diroutput : output directory [',TRIM(cl_dirout),']'
      PRINT *,'       -mask path_to_mask : indicate the name of the land/sea mask. [', TRIM(cf_msk),']'
      PRINT *,'             mask variable is supposed to be named ',TRIM(cv_msk),'.'
      PRINT *,'       -ratio : multiplicative facteur used for scaling the output [',TRIM(cl_ratio),']'
+     PRINT *,'       '
+     PRINT *,'       -dim_lon LON-dim : give name of longitude dimension [',TRIM(c_dimlon),']'
+     PRINT *,'       -dim_lat LAT-dim : give name of latitude dimension [',TRIM(c_dimlat),']'
+     PRINT *,'       -dim_tim TIME-dim : give name of time dimension [',TRIM(c_dimtim),']'
+     PRINT *,'       -var_lon LON-var : give name of longitude variable [',TRIM(cv_lon),']'
+     PRINT *,'       -var_lat LAT-var : give name of latitude variable [',TRIM(cv_lat),']'
+     PRINT *,'       -var_tim TIME-var : give name of time variable [',TRIM(cv_tim),']'
      PRINT *,'        '
      PRINT *,'      '
      PRINT *,'     REQUIRED FILES :'
@@ -130,32 +146,37 @@ USE netcdf
   ijarg = 1
   nfil = 0
   DO WHILE ( ijarg <= narg )
-     CALL getarg (ijarg, cldum) ; ijarg = ijarg + 1
+     CALL getarg (ijarg, cldum) ; ijarg=ijarg + 1
      SELECT CASE ( cldum )
      CASE ( "-dataset" )
-        CALL getarg (ijarg, cldum)
-        cl_dtaset = TRIM(cldum) ; ijarg = ijarg + 1
+        CALL getarg (ijarg, cl_dtaset ) ; ijarg=ijarg+1
      CASE ( "-area" )
-        CALL getarg (ijarg, cldum)
-        cl_zone = TRIM(cldum) ; ijarg = ijarg + 1
+        CALL getarg (ijarg, cl_zone   ) ; ijarg=ijarg+1
      CASE ( "-fyear" )
-        CALL getarg (ijarg, cldum)
-        cl_frstyr = TRIM(cldum) ; READ(cl_frstyr,*) dfyear ; ijarg = ijarg + 1
+        CALL getarg (ijarg, cl_frstyr ) ; ijarg=ijarg+1 ; READ(cl_frstyr,*) dfyear
      CASE ( "-lyear" )
-        CALL getarg (ijarg, cldum)
-        cl_lastyr = TRIM(cldum) ; READ(cl_lastyr,*) dlyear ; ijarg = ijarg + 1
+        CALL getarg (ijarg, cl_lastyr ) ; ijarg=ijarg+1 ; READ(cl_lastyr,*) dlyear
      CASE ( "-var" )
-        CALL getarg (ijarg, cldum)
-        cv_in = TRIM(cldum) ; ijarg = ijarg + 1
+        CALL getarg (ijarg, cv_in     ) ; ijarg=ijarg+1
      CASE ( "-diroutput" )
-        CALL getarg (ijarg, cldum)
-        cl_dirout = TRIM(cldum) ; ijarg = ijarg + 1
+        CALL getarg (ijarg, cl_dirout ) ; ijarg=ijarg+1
      CASE ( "-mask" )
-        CALL getarg (ijarg, cldum)
-        cf_msk = TRIM(cldum) ; ijarg = ijarg + 1
+        CALL getarg (ijarg, cf_msk    ) ; ijarg=ijarg+1
      CASE ( "-ratio" )
-        CALL getarg (ijarg, cldum)
-        cl_ratio = TRIM(cldum) ; READ(cl_ratio,*) dratio ; ijarg = ijarg + 1
+        CALL getarg (ijarg, cl_ratio  ) ; ijarg=ijarg+1 ; READ(cl_ratio,*) dratio 
+     CASE ( "-dim_lon" )
+        CALL getarg (ijarg, c_dimlon  ) ; ijarg=ijarg+1
+     CASE ( "-dim_lat" )
+        CALL getarg (ijarg, c_dimlat  ) ; ijarg=ijarg+1
+     CASE ( "-dim_tim" )
+        CALL getarg (ijarg, c_dimtim  ) ; ijarg=ijarg+1
+     CASE ( "-var_lon" )
+        CALL getarg (ijarg, cv_lon    ) ; ijarg=ijarg+1
+     CASE ( "-var_lat" )
+        CALL getarg (ijarg, cv_lat    ) ; ijarg=ijarg+1
+     CASE ( "-var_tim" )
+        CALL getarg (ijarg, cv_tim    ) ; ijarg=ijarg+1
+
      CASE DEFAULT         ! then the argument is a file
         nfil          = nfil + 1
         cf_inlist(nfil) = TRIM(cldum)
@@ -166,7 +187,7 @@ USE netcdf
   !! We need to known the total number of frames
   DO jarg=1,nfil
      CALL check( NF90_OPEN(TRIM(cf_inlist(jarg)), NF90_NOWRITE, ncid_in) )
-     CALL check( NF90_INQ_DIMID(ncid_in, 'time', idd_t) )
+     CALL check( NF90_INQ_DIMID(ncid_in, c_dimtim, idd_t) )
      CALL check( NF90_INQUIRE_DIMENSION(ncid_in, idd_t, len=npt) )
      CALL check( NF90_CLOSE(ncid_in) )
      nftot = nftot + npt
@@ -191,8 +212,8 @@ USE netcdf
   
   ! if it fails, try the alternative lon0/lat0
   IF ( (ierr1 /= NF90_NOERR).OR.(ierr2 /= NF90_NOERR) ) THEN
-     CALL check( NF90_INQ_DIMID(ncid_msk, cv_altlon, idd_lonin) )
-     CALL check( NF90_INQ_DIMID(ncid_msk, cv_altlat, idd_latin) )
+    PRINT *, ' ERROR: bad name for lon lat dimension: use -dim_lon, -dim_lat options!'
+    STOP 1
   ENDIF
 
   CALL check( NF90_INQUIRE_DIMENSION(ncid_msk, idd_lonin, len=npx) )
@@ -208,8 +229,8 @@ USE netcdf
   
   ! if it fails, try the alternative lon0/lat0
   IF ( (ierr1 /= NF90_NOERR).OR.(ierr2 /= NF90_NOERR) ) THEN
-     CALL check( NF90_INQ_VARID(ncid_msk, cv_altlon, idv_lonin) )
-     CALL check( NF90_INQ_VARID(ncid_msk, cv_altlat, idv_latin) )
+    PRINT *, ' ERROR: bad name for lon lat variables: use -dim_lon, -dim_lat options!'
+    STOP 1
   ENDIF
 
   CALL check( NF90_INQ_VARID(ncid_msk, cv_msk, idv_msk) )
@@ -317,7 +338,7 @@ de2=1
      PRINT *, 'working on '//TRIM(cf_inlist(jarg))
      ! get number of frames
      CALL check( NF90_OPEN(TRIM(cf_inlist(jarg)), NF90_NOWRITE, ncid_in) )
-     CALL check( NF90_INQ_DIMID(ncid_in, 'time', idd_timein) )
+     CALL check( NF90_INQ_DIMID(ncid_in, c_dimtim, idd_timein) )
      CALL check( NF90_INQUIRE_DIMENSION(ncid_in, idd_timein,len=npt) )
 
      CALL check( NF90_INQ_VARID(ncid_in, TRIM(cv_in), idv_in) )  
@@ -416,4 +437,4 @@ CONTAINS
       END SUBROUTINE check
 
 
-END PROGRAM global_timeserie
+END PROGRAM dft_timeseries
