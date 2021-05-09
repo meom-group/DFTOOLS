@@ -14,7 +14,7 @@ VPATH = $(BINDIR)
 EXEC = change_unit_precip_jmm dft_q2_comp upside_down decumul calc_q2 change_unit_precip \
        calc_q2_6H upside_down_var change_unit_precip_raw  mk_lsm_var mk_lsm_from_rawfile \
        decumul_yearly mk_daily_mean mk_monthly_mean add_feb_29 dft_timeseries \
-       dft_decumul_daily.f90
+       dft_decumul_daily.f90 fill_time_counter
 #-----------------------------------------------------
 
 all: $(EXEC)
@@ -64,6 +64,8 @@ calc_q2_6H: calc_q2_6H.f90
 change_unit_precip_raw: change_unit_precip_raw.f90
 	$(F90) change_unit_precip_raw.f90 -o $(BINDIR)/change_unit_precip_raw $(FFLAGS)
 
+fill_time_counter: fill_time_counter.f90
+	 $(F90) fill_time_counter.f90 -o $(BINDIR)/fill_time_counter $(FFLAGS)
 
 mk_lsm_from_rawfile: mk_lsm_from_rawfile.f90
 	$(F90) mk_lsm_from_rawfile.f90 -o $(BINDIR)/mk_lsm_from_rawfile $(FFLAGS)
